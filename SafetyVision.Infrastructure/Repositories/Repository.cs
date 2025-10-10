@@ -14,7 +14,7 @@ namespace SafetyVision.Infrastructure.Repositories
         }
         public async Task AddAsync(T entity) => await _context.Set<T>().AddAsync(entity);
 
-        public void DeleteAsync(T entity) => _context.Set<T>().Remove(entity); 
+        public void Delete(T entity) => _context.Set<T>().Remove(entity); 
 
         public Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
@@ -23,9 +23,9 @@ namespace SafetyVision.Infrastructure.Repositories
 
         public async Task<IEnumerable<T>> GetAllAsync() => await _context.Set<T>().ToListAsync();
 
-        public async Task<T?> GetByIdAsync(int id) => await _context.Set<T>().FindAsync(id);
+        public async Task<T?> GetByIdAsync(Guid id) => await _context.Set<T>().FindAsync(id);
 
 
-        public void UpdateAsync(T entity) => _context.Set<T>().Update(entity);
+        public void Update(T entity) => _context.Set<T>().Update(entity);
     }
 }
