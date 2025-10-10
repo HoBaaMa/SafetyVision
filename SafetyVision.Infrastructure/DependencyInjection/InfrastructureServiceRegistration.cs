@@ -17,6 +17,11 @@ namespace SafetyVision.Infrastructure.Utils
 
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IWorkerRepository, WorkerRepository>();
+            services.AddScoped<ISafetyOfficerRepository, SafetyOfficerRepository>();
+            services.AddScoped<IViolationRepository, ViolationRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

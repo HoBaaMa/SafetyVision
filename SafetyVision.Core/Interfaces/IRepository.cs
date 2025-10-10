@@ -7,7 +7,7 @@ namespace SafetyVision.Core.Interfaces
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
-        Task UpdateAsync(T entity);
+        void UpdateAsync(T entity);
         void DeleteAsync(T entity);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
     }
