@@ -10,5 +10,7 @@ namespace SafetyVision.Core.Interfaces
         void Update(T entity);
         void Delete(T entity);
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+        Task<T?> FirstOrDefaultAsync(Expression<Func<T, bool>> predicate);
+
     }
 }

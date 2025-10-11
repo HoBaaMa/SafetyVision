@@ -21,7 +21,7 @@ namespace SafetyVision.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Notification>> GetWorkerNotificationsByIdAsync(int workerId)
+        public Task<IEnumerable<Notification>> GetWorkerNotificationsByIdAsync(Guid workerId)
         {
             throw new NotImplementedException();
         }
