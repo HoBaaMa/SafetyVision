@@ -26,9 +26,6 @@ namespace SafetyVision.Infrastructure.Data.Configurations
 
             builder.Property(so => so.Gender)
                 .HasConversion<string>();
-
-            builder.Property(so => so.PasswordHash)
-                .HasMaxLength(int.MaxValue);
         }
     }
 }
