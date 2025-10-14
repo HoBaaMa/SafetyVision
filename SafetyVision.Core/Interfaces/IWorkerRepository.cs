@@ -6,7 +6,7 @@ namespace SafetyVision.Core.Interfaces
     {
         Task<Worker?> GetByUserNameAsync(string username);
         Task<Worker?> GetByNameAsync(string name);
-        Task<IEnumerable<Worker>> GetByDepartmentIdAsync(int departmentId);
+        Task<IEnumerable<Worker>> GetByDepartmentIdAsync(Guid departmentId);
         
     }
 }
