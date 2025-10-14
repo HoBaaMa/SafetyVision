@@ -24,7 +24,6 @@ namespace SafetyVision.Infrastructure.Repositories
             SafetyOfficers = new SafetyOfficerRepository(_context);
             Violations = new ViolationRepository(_context);
             Notifications = new NotificationRepository(_context);
-
         }
 
         public async Task<int> SaveChangesAsync()
