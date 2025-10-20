@@ -1,4 +1,5 @@
-﻿using SafetyVision.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using SafetyVision.Core.Entities;
 using SafetyVision.Core.Interfaces;
 using SafetyVision.Infrastructure.Data;
 
@@ -10,14 +11,14 @@ namespace SafetyVision.Infrastructure.Repositories
         {
         }
 
-        public Task<IEnumerable<Violation>> GetViolationsByDateAsync(DateTime occurredDate)
+        public async Task<IEnumerable<Violation>> GetViolationsByDateAsync(DateTime occurredDate)
         {
-            throw new NotImplementedException();
+            return await _context.Violations.Where(v => v.OccurredDate == occurredDate).ToListAsync();
         }
 
-        public Task<IEnumerable<Violation>> GetWorkerViolationsByIdAsync(int workerId)
+        public async Task<IEnumerable<Violation>> GetWorkerViolationsByIdAsync(Guid workerId)
         {
-            throw new NotImplementedException();
+            return await _context.Violations.Where(v => v.WorkerId == workerId).ToListAsync();
         }
     }
 }

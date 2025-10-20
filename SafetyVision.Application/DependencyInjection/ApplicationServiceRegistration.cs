@@ -12,6 +12,8 @@ namespace SafetyVision.Application.DependencyInjection
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IWorkerService, WorkerService>();
+            services.AddScoped<ISafetyOfficerService, SafetyOfficerService>();
+            services.AddScoped<IViolationService, ViolationService>();
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             return services;

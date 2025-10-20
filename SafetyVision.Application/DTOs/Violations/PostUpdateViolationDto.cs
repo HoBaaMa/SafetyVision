@@ -1,15 +1,15 @@
 ﻿using SafetyVision.Core.Enums;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace SafetyVision.Application.DTOs.Violations
 {
-    public class ViolationDto
+    public class PostUpdateViolationDto
     {
-        public Guid Id { get; set; }
-        public Guid WorkerId { get; set; }
-        public ViolationType Type { get; set; }
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string Description { get; set; } = string.Empty;
         public ViolationSeverity Severity { get; set; }
-        public DateTime OccurredDate { get; set; }
+        [Required(ErrorMessage = "{0} is required.")]
         public ViolationStatus Status { get; set; }
         public DateTime UpdatedAt { get; set; }
     }
