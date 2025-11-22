@@ -69,8 +69,11 @@ namespace SafetyVision.Application.Services
             return Result<IEnumerable<ViolationDto>>.Success(_mapper.Map<IEnumerable<ViolationDto>>(violations));
         }
 
-        public async Task<Result<IEnumerable<ViolationDto>> >GetWorkerViolationsByIdAsync(Guid workerId)
+        public async Task<Result<IEnumerable<ViolationDto>>>GetWorkerViolationsByIdAsync(Guid workerId)
         {
+            if (await _unitOfWork.Workers.GetByIdAsync(workerId) is null)
+                return Result<IEnumerable<ViolationDto>>.Failure(ErrorType.NotFound, $"Worker with ID: {workerId} not found.");
+
             var violations = await _unitOfWork.Violations.GetWorkerViolationsByIdAsync(workerId);
 
             return Result<IEnumerable<ViolationDto>>.Success(_mapper.Map<IEnumerable<ViolationDto>>(violations));

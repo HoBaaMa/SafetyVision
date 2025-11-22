@@ -13,6 +13,7 @@ namespace SafetyVision.Application.DTOs.Violations
         [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters.")]
         public string Description { get; set; } = string.Empty;
         public ViolationSeverity Severity { get; set; }
+        // Fluent Vildation for the occurred date must be not less than DateTime.UtcNow
         public DateTime OccurredDate { get; set; }
         [Required(ErrorMessage = "{0} is required.")]
         public ViolationStatus Status { get; set; }
