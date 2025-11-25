@@ -1,11 +1,29 @@
-﻿namespace SafetyVision.Application.DTOs.Workers
+﻿using SafetyVision.Core.Enums;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace SafetyVision.Application.DTOs.Workers
 {
     public class PostWorkerDto
     {
+        [DisplayName("Full Name")]
+        [Required(ErrorMessage = "{0} is required.")]
+        [StringLength(150, ErrorMessage = "{0} cannot exceed {1} characters.")]
         public required string FullName { get; set; }
+        
+        [Required(ErrorMessage = "{0} is required.")]
+        [StringLength(100, ErrorMessage = "{0} cannot exceed {1} characters.")]
         public required string Username { get; set; }
+        
+        [Required(ErrorMessage = "{0} is required.")]
+        [EmailAddress(ErrorMessage = "Invalid email format.")]
         public required string Email { get; set; }
+        
+        [Required(ErrorMessage = "{0} is required.")]
+        public Gender Gender { get; set; }
+        
+        [DisplayName("Department ID")]
+        [Required(ErrorMessage = "{0} is required.")]
         public Guid DepartmentId { get; set; }
-
     }
 }
