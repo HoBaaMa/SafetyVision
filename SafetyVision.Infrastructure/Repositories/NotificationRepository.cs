@@ -1,4 +1,6 @@
-﻿using SafetyVision.Core.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using SafetyVision.Core.Entities;
 using SafetyVision.Core.Enums;
 using SafetyVision.Core.Interfaces;
 using SafetyVision.Infrastructure.Data;
@@ -11,19 +13,32 @@ namespace SafetyVision.Infrastructure.Repositories
         {
         }
 
-        public Task<IEnumerable<Notification>> GetNotificationsByDateAsync(DateTime date)
+        public async Task<IEnumerable<Notification>> GetNotificationsByDateAsync(DateTime date)
         {
-            throw new NotImplementedException();
+            var startOfDay = date.Date;
+            var endOfDay = startOfDay.AddDays(1);
+            
+            return await _context.Notifications
+                .Where(n => n.CreatedAt >= startOfDay && n.CreatedAt < endOfDay)
+                .Include(w => w.ReceiverWorker)
+                .Include(so => so.SenderOfficer)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<Notification>> GetNotificationsByTypeAsync(NotificationType notificationType)
+        public async Task<IEnumerable<Notification>> GetNotificationsByTypeAsync(NotificationType notificationType)
         {
-            throw new NotImplementedException();
+            return await _context.Notifications.Where(n => n.Type == notificationType)
+                .Include(w => w.ReceiverWorker)
+                .Include(so => so.SenderOfficer)
+                .ToListAsync();
         }
 
-        public Task<IEnumerable<Notification>> GetWorkerNotificationsByIdAsync(Guid workerId)
+        public async Task<IEnumerable<Notification>> GetWorkerNotificationsByIdAsync (Guid workerId)
         {
-            throw new NotImplementedException();
+            return await _context.Notifications.Where(n => n.ReceiverWorkerId == workerId)
+                .Include(so => so.SenderOfficer)
+                .ToListAsync();
         }
     }
 }

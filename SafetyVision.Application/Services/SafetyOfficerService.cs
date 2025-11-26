@@ -20,10 +20,12 @@ namespace SafetyVision.Application.Services
         }
         public async Task<Result<SafetyOfficerDto>> CreateAsync(PostSafetyOfficerDto dto)
         {
-            if (await _unitOfWork.SafetyOfficers.GetByUserNameAsync(dto.Username) is not null)
+            var existingUser = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Username == dto.Username)).Any();
+            if (existingUser)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Username: {dto.Username} already exists.");
 
-            if (await _unitOfWork.SafetyOfficers.FindAsync(w => w.Email == dto.Email) is not null)
+            var existingEmail = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Email == dto.Email)).Any();
+            if (existingEmail)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Email: {dto.Email} already registered.");
 
             var safetyOfficer = _mapper.Map<SafetyOfficer>(dto);
@@ -91,7 +93,7 @@ namespace SafetyVision.Application.Services
             return Result<SafetyOfficerDto>.Success(_mapper.Map<SafetyOfficerDto>(safetyOfficer));
         }
 
-
+  
         public async Task<Result> UpdateAsync(Guid id, PostSafetyOfficerDto dto)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByIdAsync(id);
@@ -99,10 +101,15 @@ namespace SafetyVision.Application.Services
             if (safetyOfficer is null)
                 return Result.Failure(ErrorType.NotFound, $"Safety officer with ID: {id} not found.");
 
-            if (await _unitOfWork.SafetyOfficers.GetByUserNameAsync(dto.Username) is not null && safetyOfficer.Id != id)
+            if (safetyOfficer.Id != id)
+                return Result.Failure(ErrorType.Unauthorized, $"Unauthorized attempt.");
+
+            var existingUser = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Username == dto.Username)).Any();
+            if (existingUser)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Username {dto.Username} already exists.");
 
-            if (await _unitOfWork.SafetyOfficers.FindAsync(w => w.Email == dto.Email) is not null && safetyOfficer.Id != id)
+            var existingEmail = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Email == dto.Email)).Any();
+            if (existingEmail)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Email: {dto.Email} already registered.");
 
             _mapper.Map(dto, safetyOfficer);

@@ -8,7 +8,7 @@ namespace SafetyVision.Application.Mappings
     {
         public SafetyOfficerMappingProfile()
         {
-            CreateMap<SafetyOfficer, SafetyOfficerDto>().ReverseMap();
+            CreateMap<SafetyOfficerDto, SafetyOfficer>().ReverseMap();
             CreateMap<PostSafetyOfficerDto, SafetyOfficer>();
         }
     }

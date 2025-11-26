@@ -6,7 +6,7 @@ namespace SafetyVision.Application.DTOs.Notifications
     public class PostNotificationDto
     {
         [Required(ErrorMessage = "Worker ID is required.")]
-        public Guid ReciverWorkerId { get; set; }
+        public Guid ReceiverWorkerId { get; set; }
         // Should be filled auto
         public Guid SenderOfficerId { get; set; }
         [StringLength(300, ErrorMessage = "{0} cannot exceed {1} characters.")]

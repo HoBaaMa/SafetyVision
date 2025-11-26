@@ -22,11 +22,11 @@ namespace SafetyVision.Application.Services
         {
             var existingUser = await _unitOfWork.Workers.GetByUserNameAsync(dto.Username);
             if (existingUser is not null) 
-                return Result<WorkerDto>.Failure(ErrorType.Conflict, "Username already exists.");
+                return Result<WorkerDto>.Failure(ErrorType.Conflict, $"Username: {dto.Username} already exists.");
 
             var existingEmail = (await _unitOfWork.Workers.FindAsync(w => w.Email == dto.Email)).Any();
             if (existingEmail) 
-                return Result<WorkerDto>.Failure(ErrorType.Conflict, "Email already registered.");
+                return Result<WorkerDto>.Failure(ErrorType.Conflict, $"Email: {dto.Username} already registered.");
 
             var department = await _unitOfWork.Departments.GetByIdAsync(dto.DepartmentId);
             if (department is null) 
