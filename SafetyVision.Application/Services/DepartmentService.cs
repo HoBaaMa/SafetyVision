@@ -33,13 +33,11 @@ namespace SafetyVision.Application.Services
 
         public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var department = await _unitOfWork.Departments.GetByIdAsync(id, cancellationToken);
+            var department = await _unitOfWork.Departments.GetByIdWithWorkersCount(id, cancellationToken);
             if (department == null)
                 return Result.Failure(ErrorType.NotFound, $"Department with ID '{id}' was not found.");
 
-            // Check for workers
-            var hasWorkers = (await _unitOfWork.Workers
-                .FindAsync(w => w.DepartmentId == id, cancellationToken)).Any();
+            bool hasWorkers = department.Workers.Count > 0;
             if (hasWorkers)
                 return Result.Failure(ErrorType.Conflict,
                     $"Cannot delete department '{department.Name}' because it has workers assigned to it. Please reassign or remove all workers before deleting this department.");
