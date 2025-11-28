@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SafetyVision.Core.Entities;
+using SafetyVision.Infrastructure.Data.Seeders;
 
 namespace SafetyVision.Infrastructure.Data
 {
@@ -17,6 +18,9 @@ namespace SafetyVision.Infrastructure.Data
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+
+            // Seeding Departments
+            DepartmentSeeder.SeedDepartments(modelBuilder);
         }
     }
 }
