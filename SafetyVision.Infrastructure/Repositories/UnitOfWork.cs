@@ -1,4 +1,5 @@
-﻿using SafetyVision.Core.Interfaces;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using SafetyVision.Core.Interfaces;
 using SafetyVision.Infrastructure.Data;
 
 namespace SafetyVision.Infrastructure.Repositories
@@ -6,6 +7,7 @@ namespace SafetyVision.Infrastructure.Repositories
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext _context;
+        private IDbContextTransaction? _transaction;
         public IWorkerRepository Workers { get; }
 
         public IDepartmentRepository Departments { get; }
@@ -26,9 +28,26 @@ namespace SafetyVision.Infrastructure.Repositories
             Notifications = new NotificationRepository(_context);
         }
 
-        public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync(CancellationToken cancellationToken)
         {
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        public async Task BeginTransactionAsync()
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+
+        public async Task CommitAsync()
+        {
+            await _transaction!.CommitAsync();
+            await _transaction.DisposeAsync();
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _transaction!.RollbackAsync();
+            await _transaction.DisposeAsync();
         }
     }
 }

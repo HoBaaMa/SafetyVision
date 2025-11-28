@@ -22,9 +22,9 @@ namespace SafetyVision.Controllers.v1
         [ProducesResponseType(typeof(IEnumerable<DepartmentDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
 
-        public async Task<IActionResult> GetAllDepartments()
+        public async Task<IActionResult> GetAllDepartments(CancellationToken cancellationToken)
         {
-            var departments = await _departmentService.GetAllAsync();
+            var departments = await _departmentService.GetAllAsync(cancellationToken);
             return Ok(departments.Value);
         }
 
@@ -32,9 +32,9 @@ namespace SafetyVision.Controllers.v1
         [ProducesResponseType(typeof(DepartmentDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetDepartmentById(Guid id)
+        public async Task<IActionResult> GetDepartmentById(Guid id, CancellationToken cancellationToken)
         {
-            var result = await _departmentService.GetByIdAsync(id);
+            var result = await _departmentService.GetByIdAsync(id, cancellationToken);
 
             if (!result.IsSuccess) return result.ErrorType switch
             {
@@ -52,9 +52,9 @@ namespace SafetyVision.Controllers.v1
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddAsync([FromBody] PostDepartmentDto dto)
+        public async Task<IActionResult> AddAsync([FromBody] PostDepartmentDto dto, CancellationToken cancellationToken)
         {
-            var result = await _departmentService.CreateAsync(dto);
+            var result = await _departmentService.CreateAsync(dto, cancellationToken);
 
             if (!result.IsSuccess) return result.ErrorType switch
             {
@@ -70,9 +70,9 @@ namespace SafetyVision.Controllers.v1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var result = await _departmentService.DeleteAsync(id);
+            var result = await _departmentService.DeleteAsync(id, cancellationToken);
             if (!result.IsSuccess)
             {
                 return NotFound(result.Errors);
@@ -89,9 +89,9 @@ namespace SafetyVision.Controllers.v1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
-        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] PostDepartmentDto dto)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] PostDepartmentDto dto, CancellationToken cancellationToken)
         {
-            var result = await _departmentService.UpdateAsync(id, dto);
+            var result = await _departmentService.UpdateAsync(id, dto, cancellationToken);
 
             if (!result.IsSuccess) return result.ErrorType switch
             {

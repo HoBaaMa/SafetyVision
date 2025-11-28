@@ -7,6 +7,9 @@
         ISafetyOfficerRepository SafetyOfficers { get; }
         IViolationRepository Violations { get; }
         INotificationRepository Notifications { get; }
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
+        Task BeginTransactionAsync();
+        Task CommitAsync();
+        Task RollbackAsync();
     }
 }
