@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 
-namespace SafetyVision.Configurations
+namespace SafetyVision.API.Configurations
 {
     public static class ApiVersioningRegistration
     {

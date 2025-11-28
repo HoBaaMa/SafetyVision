@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning.ApiExplorer;
 using Microsoft.OpenApi.Models;
 
-namespace SafetyVision.Configurations
+namespace SafetyVision.API.Configurations
 {
     public static class SwaggerRegistration
     {
