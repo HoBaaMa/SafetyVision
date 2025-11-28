@@ -44,14 +44,14 @@ namespace SafetyVision.Application.Services
 
         public async Task<Result<IEnumerable<DepartmentDto>>> GetAllAsync()
         {
-            var departments = await _unitOfWork.Departments.GetAllAsync();
+            var departments = await _unitOfWork.Departments.GetAllWithWorkersCountAsync();
 
             return Result<IEnumerable<DepartmentDto>>.Success(_mapper.Map<IEnumerable<DepartmentDto>>(departments));
         }
 
         public async Task<Result<DepartmentDto>> GetByIdAsync(Guid id)
         {
-            var department = await _unitOfWork.Departments.GetByIdAsync(id);
+            var department = await _unitOfWork.Departments.GetByIdWithWorkersCount(id);
             return department is null ? Result<DepartmentDto>.Failure(ErrorType.NotFound, "Department not found.") : Result<DepartmentDto>.Success(_mapper.Map<DepartmentDto>(department));
         }
 

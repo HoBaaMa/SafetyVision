@@ -4,6 +4,7 @@ namespace SafetyVision.Core.Interfaces
 {
     public interface IDepartmentRepository : IRepository<Department>
     {
-
+        Task<IEnumerable<Department>> GetAllWithWorkersCountAsync();
+        Task<Department?> GetByIdWithWorkersCount(Guid id);
     }
 }

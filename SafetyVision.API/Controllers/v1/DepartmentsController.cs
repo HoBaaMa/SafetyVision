@@ -1,0 +1,106 @@
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
+using SafetyVision.Application.DTOs.Departments;
+using SafetyVision.Application.Interfaces;
+using SafetyVision.Core.Enums;
+
+namespace SafetyVision.Controllers.v1
+{
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiController]
+    public class DepartmentsController : ControllerBase
+    {
+        private readonly IDepartmentService _departmentService;
+        public DepartmentsController(IDepartmentService departmentService)
+        {
+            _departmentService = departmentService;
+        }
+
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<DepartmentDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
+        public async Task<IActionResult> GetAllDepartments()
+        {
+            var departments = await _departmentService.GetAllAsync();
+            return Ok(departments.Value);
+        }
+
+        [HttpGet("{id:Guid}")]
+        [ProducesResponseType(typeof(DepartmentDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetDepartmentById(Guid id)
+        {
+            var result = await _departmentService.GetByIdAsync(id);
+
+            if (!result.IsSuccess) return result.ErrorType switch
+            {
+                ErrorType.NotFound => NotFound(result.Errors),
+                _ => StatusCode(500, result.Errors)
+            };
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(typeof(DepartmentDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddAsync([FromBody] PostDepartmentDto dto)
+        {
+            var result = await _departmentService.CreateAsync(dto);
+
+            if (!result.IsSuccess) return result.ErrorType switch
+            {
+                ErrorType.Conflict => Conflict(result.Errors),
+                _ => StatusCode(500, result.Errors)
+            };
+            
+            return CreatedAtAction(nameof(GetDepartmentById), new {Id = result.Value?.Id}, result.Value);
+        }
+
+        [HttpDelete("{id:Guid}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] Guid id)
+        {
+            var result = await _departmentService.DeleteAsync(id);
+            if (!result.IsSuccess)
+            {
+                return NotFound(result.Errors);
+            }
+            // Errors return
+            return NoContent();
+        }
+
+        [HttpPut("{id:Guid}")]
+        [Produces("application/json")]
+        [Consumes("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid id, [FromBody] PostDepartmentDto dto)
+        {
+            var result = await _departmentService.UpdateAsync(id, dto);
+
+            if (!result.IsSuccess) return result.ErrorType switch
+            {
+                ErrorType.Conflict => Conflict(result.Errors),
+                ErrorType.NotFound => NotFound(result.Errors),
+                _ => StatusCode(500, result.Errors)
+            };
+
+            return NoContent();
+        }
+    }
+}

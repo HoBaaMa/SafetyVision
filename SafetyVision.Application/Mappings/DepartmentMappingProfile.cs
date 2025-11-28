@@ -8,8 +8,9 @@ namespace SafetyVision.Application.Mappings
     {
         public DepartmentMappingProfile()
         {
-            CreateMap<Department, DepartmentDto>().ReverseMap();
+            CreateMap<Department, DepartmentDto>().ForMember(dest => dest.WorkersCount, opt => opt.MapFrom(src => src.Workers.Count)).ReverseMap();
             CreateMap<PostDepartmentDto, Department>();
+
         }
     }
 }
