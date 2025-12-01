@@ -10,8 +10,11 @@ namespace SafetyVision.Infrastructure.Repositories
         public WorkerRepository(AppDbContext context) : base(context)
         {
         }
-        public async Task<Worker?> GetByNameAsync(string name) => await _context.Workers.FirstOrDefaultAsync(w => w.FullName.Contains(name));
+        
+        public async Task<Worker?> GetByNameAsync(string name, CancellationToken cancellationToken = default) => 
+            await _context.Workers.FirstOrDefaultAsync(w => w.FullName.Contains(name), cancellationToken);
 
-        public async Task<Worker?> GetByUserNameAsync(string username) => await _context.Workers.FirstOrDefaultAsync(w => w.Username == username);
+        public async Task<Worker?> GetByUserNameAsync(string username, CancellationToken cancellationToken = default) => 
+            await _context.Workers.FirstOrDefaultAsync(w => w.Username == username, cancellationToken);
     }
 }
