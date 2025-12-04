@@ -1,6 +1,4 @@
-﻿using SafetyVision.Core.Entities;
-
-namespace SafetyVision.Application.DTOs.SafetyOfficers
+﻿namespace SafetyVision.Application.DTOs.SafetyOfficers
 {
     public class SafetyOfficerDto
     {
@@ -10,6 +8,6 @@ namespace SafetyVision.Application.DTOs.SafetyOfficers
         // public required string Email { get; set; }
         public required string RoleTitle { get; set; }
         public DateTime CreatedAt { get; set; }
-        public ICollection<Notification>? Notifications { get; set; }
+        //public ICollection<Notification>? Notifications { get; set; }
     }
 }

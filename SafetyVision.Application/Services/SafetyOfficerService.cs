@@ -18,7 +18,8 @@ namespace SafetyVision.Application.Services
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<Result<SafetyOfficerDto>> CreateAsync(PostSafetyOfficerDto dto)
+
+        public async Task<Result<SafetyOfficerDto>> CreateAsync(PostSafetyOfficerDto dto, CancellationToken cancellationToken = default)
         {
             var existingUser = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Username == dto.Username)).Any();
             if (existingUser)
@@ -36,7 +37,7 @@ namespace SafetyVision.Application.Services
             return Result<SafetyOfficerDto>.Success(_mapper.Map<SafetyOfficerDto>(safetyOfficer));
         }
 
-        public async Task<Result> DeleteAsync(Guid id)
+        public async Task<Result> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByIdAsync(id);
             if (safetyOfficer is null) 
@@ -48,14 +49,14 @@ namespace SafetyVision.Application.Services
             return Result.Success();
         }
 
-        public async Task<Result<IEnumerable<SafetyOfficerDto>>> GetAllAsync()
+        public async Task<Result<IEnumerable<SafetyOfficerDto>>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var safetyOfficers = await _unitOfWork.SafetyOfficers.GetAllAsync();
 
             return Result<IEnumerable<SafetyOfficerDto>>.Success(_mapper.Map<IEnumerable<SafetyOfficerDto>>(safetyOfficers));
         }
 
-        public async Task<Result<IEnumerable<SafetyOfficerDto>>> GetAllByRoleTitleAsync(string roleTitle)
+        public async Task<Result<IEnumerable<SafetyOfficerDto>>> GetAllByRoleTitleAsync(string roleTitle, CancellationToken cancellationToken = default)
         {
             var safetyOfficers = await _unitOfWork.SafetyOfficers.GetAllAsync();
             safetyOfficers = safetyOfficers.Where(r => r.RoleTitle == roleTitle);
@@ -63,7 +64,7 @@ namespace SafetyVision.Application.Services
             return Result<IEnumerable<SafetyOfficerDto>>.Success(_mapper.Map<IEnumerable<SafetyOfficerDto>>(safetyOfficers));
         }
 
-        public async Task<Result<SafetyOfficerDto>> GetByIdAsync(Guid id)
+        public async Task<Result<SafetyOfficerDto>> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByIdAsync(id);
 
@@ -73,7 +74,7 @@ namespace SafetyVision.Application.Services
             return Result<SafetyOfficerDto>.Success(_mapper.Map<SafetyOfficerDto>(safetyOfficer));
         }
 
-        public async Task<Result<SafetyOfficerDto>> GetByNameAsync(string name)
+        public async Task<Result<SafetyOfficerDto>> GetByNameAsync(string name, CancellationToken cancellationToken = default)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByNameAsync(name);
 
@@ -83,7 +84,7 @@ namespace SafetyVision.Application.Services
             return Result<SafetyOfficerDto>.Success(_mapper.Map<SafetyOfficerDto>(safetyOfficer));
         }
 
-        public async Task<Result<SafetyOfficerDto>> GetByUserNameAsync(string username)
+        public async Task<Result<SafetyOfficerDto>> GetByUserNameAsync(string username, CancellationToken cancellationToken = default)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByUserNameAsync(username);
 
@@ -93,22 +94,20 @@ namespace SafetyVision.Application.Services
             return Result<SafetyOfficerDto>.Success(_mapper.Map<SafetyOfficerDto>(safetyOfficer));
         }
 
-  
-        public async Task<Result> UpdateAsync(Guid id, PostSafetyOfficerDto dto)
+        public async Task<Result> UpdateAsync(Guid id, PostSafetyOfficerDto dto, CancellationToken cancellationToken = default)
         {
             var safetyOfficer = await _unitOfWork.SafetyOfficers.GetByIdAsync(id);
 
             if (safetyOfficer is null)
                 return Result.Failure(ErrorType.NotFound, $"Safety officer with ID: {id} not found.");
 
-            if (safetyOfficer.Id != id)
-                return Result.Failure(ErrorType.Unauthorized, $"Unauthorized attempt.");
-
-            var existingUser = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Username == dto.Username)).Any();
+            // Check if username is taken by another user (exclude self)
+            var existingUser = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Username == dto.Username && so.Id != id)).Any();
             if (existingUser)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Username {dto.Username} already exists.");
 
-            var existingEmail = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Email == dto.Email)).Any();
+            // Check if email is taken by another user (exclude self)
+            var existingEmail = (await _unitOfWork.SafetyOfficers.FindAsync(so => so.Email == dto.Email && so.Id != id)).Any();
             if (existingEmail)
                 return Result<SafetyOfficerDto>.Failure(ErrorType.Conflict, $"Email: {dto.Email} already registered.");
 
