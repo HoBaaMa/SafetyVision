@@ -1,0 +1,110 @@
+@startuml
+left to right direction
+
+skinparam usecase {
+  BackgroundColor #FFF8E1
+  BorderColor #BDB76B
+}
+skinparam rectangle {
+  BorderColor #8B7D6B
+  BackgroundColor #FDF5E6
+}
+
+' Actors
+actor "Safety Officer" as SO
+actor "Worker" as W
+
+' System boundary
+rectangle "Safety Vision Mobile App" as System {
+
+  ' Authentication
+  usecase "Login" as UC_Login
+
+  ' Safety Officer - Worker Management
+  usecase "Manage Workers" as UC_ManageWorkers
+  usecase "Register Worker" as UC_RegisterWorker
+  usecase "Update Worker" as UC_UpdateWorker
+  usecase "Delete Worker" as UC_DeleteWorker
+  usecase "View Worker Profile" as UC_ViewWorkerProfile
+  usecase "Filter Workers" as UC_FilterWorkers
+
+  ' Violations
+  usecase "Manage Violations" as UC_ManageViolations
+  usecase "View Violation Details" as UC_ViewViolationDetails
+  usecase "Update Status" as UC_UpdateStatus
+  usecase "Delete Violation" as UC_DeleteViolation
+  usecase "Filter Violations" as UC_FilterViolations
+
+  ' Notifications
+  usecase "Send Notification" as UC_SendNotification
+  usecase "Select Type & Compose" as UC_SelectTypeCompose
+  usecase "Send to Specific" as UC_SendSpecific
+  usecase "Send to All" as UC_SendAll
+  usecase "Send to Department" as UC_SendDept
+
+  usecase "View Notification History" as UC_NotificationHistory
+  usecase "Filter History" as UC_FilterHistory
+
+  ' General
+  usecase "View Recent Activity" as UC_RecentActivity
+  usecase "Update Own Profile" as UC_UpdateOwnProfile
+
+  ' Worker Use Cases
+  usecase "View Own Profile" as UC_WorkerProfile
+  usecase "Update Own Profile" as UC_WorkerUpdateProfile
+  usecase "View My Violations" as UC_WorkerViolations
+  usecase "View Violation Details" as UC_WorkerViolationDetails
+
+  usecase "View Notifications" as UC_WorkerNotifications
+  usecase "Filter Notification History" as UC_WorkerFilterHistory
+}
+
+' ------------------------
+' Actor links
+' ------------------------
+
+' Safety Officer
+SO --> UC_Login
+SO --> UC_ManageWorkers
+SO --> UC_ManageViolations
+SO --> UC_SendNotification
+SO --> UC_NotificationHistory
+SO --> UC_RecentActivity
+SO --> UC_UpdateOwnProfile
+SO --> UC_WorkerUpdateProfile
+
+' Worker
+W --> UC_Login
+W --> UC_WorkerProfile
+W --> UC_WorkerViolations
+W --> UC_WorkerViolationDetails
+W --> UC_WorkerNotifications
+W --> UC_WorkerFilterHistory
+
+' ------------------------
+' include / extend relations
+' ------------------------
+
+' Manage Workers includes:
+UC_ManageWorkers ..> UC_RegisterWorker : <<include>>
+UC_ManageWorkers ..> UC_UpdateWorker : <<include>>
+UC_ManageWorkers ..> UC_DeleteWorker : <<include>>
+UC_ManageWorkers ..> UC_ViewWorkerProfile : <<include>>
+UC_FilterWorkers ..> UC_ManageWorkers : <<extend>>
+
+' Manage Violations includes:
+UC_ManageViolations ..> UC_ViewViolationDetails : <<include>>
+UC_ManageViolations ..> UC_UpdateStatus : <<include>>
+UC_ManageViolations ..> UC_DeleteViolation : <<include>>
+UC_FilterViolations ..> UC_ManageViolations : <<extend>>
+
+' Notification architecture
+UC_SendNotification ..> UC_SelectTypeCompose : <<include>>
+UC_SendSpecific -|> UC_SendNotification
+UC_SendAll -|> UC_SendNotification
+UC_SendDept -|> UC_SendNotification
+
+' Notification history extensions
+UC_FilterHistory ..> UC_NotificationHistory : <<extend>>
+
+@enduml
