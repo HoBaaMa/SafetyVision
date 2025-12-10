@@ -1,0 +1,35 @@
+@startuml
+skinparam activity {
+    BackgroundColor #FFF8E1
+    BorderColor #B8860B
+}
+skinparam partitionBorderColor #8B7D6B
+skinparam partitionBackgroundColor #FDF5E6
+skinparam shadowing false
+
+start
+:Open App;
+:Login;
+
+if (Success?) then (Yes)
+  :Home Screen;
+else
+  stop
+endif
+
+partition "Profile" {
+  :View Profile;
+}
+
+partition "Violations" {
+  :View My Violations;
+  :View Violation Details;
+}
+
+partition "Notifications" {
+  :View Notifications;
+  :Filter Notifications;
+}
+
+stop
+@enduml

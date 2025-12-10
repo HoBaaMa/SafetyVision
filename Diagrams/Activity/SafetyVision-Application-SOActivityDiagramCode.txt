@@ -1,0 +1,53 @@
+@startuml
+skinparam activity {
+    BackgroundColor #FFF8E1
+    BorderColor #B8860B
+}
+skinparam partitionBorderColor #8B7D6B
+skinparam partitionBackgroundColor #FDF5E6
+skinparam shadowing false
+
+start
+:Open App;
+:Login;
+
+if (Success?) then (Yes)
+  :Home Screen;
+else
+  stop
+endif
+
+partition "Worker Management" {
+  :Manage Workers;
+  :Register Worker;
+  :Update Worker;
+  :Delete Worker;
+  :View Worker Profile;
+  :Filter Workers;
+}
+
+partition "Violation Management" {
+  :Manage Violations;
+  :View Violation Details;
+  :Update Status;
+  :Delete Violation;
+  :Filter Violations;
+}
+
+partition "Notifications" {
+  :Send Notification;
+  :Select Type;
+  :Compose Message;
+  :Send (Specific / All / Department);
+
+  :View Notification History;
+  :Filter History;
+}
+
+partition "General" {
+  :View Recent Activity;
+  :Update Own Profile;
+}
+
+stop
+@enduml
