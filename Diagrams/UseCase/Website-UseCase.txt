@@ -1,0 +1,130 @@
+@startuml
+' Use top to bottom for vertical layout
+top to bottom direction
+
+actor Safety Officer as SO
+
+' Custom Styling
+skinparam backgroundColor #FFFFFF
+skinparam packageBackgroundColor #FFF9E6
+skinparam usecaseBackgroundColor #FFFACD
+skinparam packageBorderColor #8B4513
+skinparam usecaseBorderColor #696969
+skinparam arrowColor #2F4F4F
+skinparam actorBorderColor #2F4F4F
+
+' Increase spacing
+skinparam nodesep 40
+skinparam ranksep 60
+
+package Safety Vision Dashboard {
+
+    ' --- Administrative Use Cases ---
+    usecase Login as Login
+    usecase Display Login Error as LoginError
+    
+    usecase View Dashboard as Dashboard
+    usecase     View Statistics     as Stats
+    usecase View Recent Activity as Recent
+    
+    usecase Manage Safety Officers as Officers
+    usecase Register Officer as RegOfficer
+    usecase Update Officer as UpdOfficer
+    usecase Delete Officer as DelOfficer
+    
+    usecase Manage Departments as Depts
+    usecase Create Department as CreateDept
+    usecase View Dept Details as ViewDept
+    usecase Update Department as UpdDept
+    usecase Delete Department as DelDept
+
+    ' --- Operational Use Cases ---
+    usecase Manage Workers as Workers
+    usecase Register Worker as RegWorker
+    usecase View Worker Profile as ViewWorker
+    usecase Update Worker as UpdWorker
+    usecase Delete Worker as DelWorker
+    usecase Filter Workers as FilterWorkers
+    
+    usecase Manage Violations as Violations
+    usecase Log New Violation as LogViolation
+    usecase View Violation Details as ViewViolation
+    usecase Update Status as UpdStatus
+    usecase Delete Violation as DelViolation
+    usecase Filter Violations as FilterViolations
+    
+    ' --- NOTIFICATIONS ---
+    usecase Send Notification as Notify
+    usecase Select Type & Compose as Compose
+    
+    ' Children (Specialized Versions)
+    usecase Send to Specific as SendOne
+    usecase Send to All as SendAll
+    usecase Send to Department as SendDept
+    
+    usecase View NotificationnHistory as History
+    usecase Filter History as FilterHistory
+}
+
+' === ACTOR CONNECTIONS ===
+SO -- Login
+SO -- Dashboard
+SO -- Officers
+SO -- Depts
+SO -- Workers
+SO -- Violations
+SO -- Notify
+SO -- History
+
+' === LOGIN ERROR HANDLING (NEW) ===
+LoginError .up. Login  extend
+
+' === INCLUDES (Core Dependencies) ===
+Dashboard .down. Stats  include
+Dashboard .down. Recent  include
+
+Officers .down. RegOfficer  include
+Officers .down. UpdOfficer  include
+Officers .down. DelOfficer  include
+
+Depts .down. CreateDept  include
+Depts .down. UpdDept  include
+Depts .down. DelDept  include
+
+Workers .down. RegWorker  include
+Workers .down. UpdWorker  include
+Workers .down. DelWorker  include
+
+Violations .down. LogViolation  include
+Violations .down. UpdStatus  include
+
+' Parent includes Compose (so children inherit this requirement)
+Notify .right. Compose  include
+
+' === GENERALIZATION (Inheritance) ===
+SendOne -up- Notify
+SendAll -up- Notify
+SendDept -up- Notify
+
+' === EXTENDS (Optional Features) ===
+ViewDept .up. Depts  extend
+
+ViewWorker .up. Workers  extend
+FilterWorkers .up. Workers  extend
+
+ViewViolation .up. Violations  extend
+DelViolation .up. Violations  extend
+FilterViolations .up. Violations  extend
+
+FilterHistory .up. History  extend
+
+' === LAYOUT HINTS ===
+Login -[hidden]down- Dashboard
+Dashboard -[hidden]down- Officers
+Officers -[hidden]down- Depts
+Depts -[hidden]down- Workers
+Workers -[hidden]down- Violations
+Violations -[hidden]down- Notify
+Notify -[hidden]down- History
+
+@enduml
